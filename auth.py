@@ -1,3 +1,6 @@
+# @Blueprint/auth
+
+#lib
 from app import db
 from flask import render_template, session, abort, request, url_for,redirect,flash
 from flask_login import login_user, current_user, login_required, logout_user

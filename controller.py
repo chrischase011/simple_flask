@@ -1,3 +1,6 @@
+# @Blueprint/controller
+
+#lib
 from app import render_template
 from flask import Blueprint
 

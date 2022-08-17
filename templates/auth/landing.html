@@ -1,0 +1,17 @@
+{% extends "layouts/auth.html" %}
+{% block content %}
+<div class="container my-5">
+    <h1>Test</h1>
+    {{result.items()}}
+    <table class="table table-light table-bordered table-striped">
+        {% for key, value in result.items() %}
+            <tr>
+                <th>{{key}}</th>
+                <td>{{value}}</td>
+            </tr>
+
+        {% endfor %}
+    </table>
+</div>
+
+{% endblock content%}

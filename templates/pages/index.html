@@ -1,0 +1,29 @@
+{% extends "layouts/layout.html" %}
+{% block content %}
+
+    <div class="container mt-3">
+
+        {% if current_user.is_authenticated %}
+            <h1 class="h2">Welcome, {{current_user.full_name}}</h1>
+        {% endif %} 
+        <div class="mb-5"></div>
+        <div class="mb-5"></div>
+        <div class="row mb-5">
+            <h3 class="text-center mb-5">What is Flask?</h3>
+            <div class="col-4">
+                <p>Flask is a micro web framework written in Python. It is classified as a microframework because it does not require particular tools or libraries. It has no database abstraction layer, form validation, or any other components where pre-existing third-party libraries provide common functions.</p>
+            </div>
+            <div class="col-4">
+                <p>Flask is a lightweight WSGI web application framework. It is designed to make getting started quick and easy, with the ability to scale up to complex applications. It began as a simple wrapper around Werkzeug and Jinja and has become one of the most popular Python web application frameworks.</p>
+            </div>
+            <div class="col-4">
+                <p>Flask offers suggestions, but doesn't enforce any dependencies or project layout. It is up to the developer to choose the tools and libraries they want to use. There are many extensions provided by the community that make adding new functionality easy.</p>
+            </div>
+        </div>
+       
+
+        
+
+    </div>
+
+{% endblock content %}

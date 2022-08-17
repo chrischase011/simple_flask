@@ -1,0 +1,73 @@
+{% extends "layouts/auth.html" %}
+{% block content %}
+<div class="container my-5">
+
+    <div class="row">
+        <div class="col-3"></div>
+        <div class="col-6">
+
+            <h1 class="mb-5">Register</h1>
+            {% for message in get_flashed_messages() %}
+            <p class="alert alert-danger text-center my-3">{{message}}</p>
+            {% endfor %}
+            <form action="{{url_for('auth.register')}}" method="post" class="mt-2">
+                {{ form.hidden_tag() }}
+                <div class="row my-3">
+                    <label for="email" class="col-6">{{form.email.label}}</label>
+                    <div class="col-12">
+                        {{form.email(class="form-control")}}
+                        {% for error in form.email.errors  %}
+                            <span class="text-danger fw-bold">{{error}}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="row my-3">
+                    <label for="email" class="col-6">{{form.full_name.label}}</label>
+                    <div class="col-12">
+                        {{form.full_name(class="form-control")}}
+                        {% for error in form.full_name.errors  %}
+                            <span class="text-danger fw-bold">{{error}}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="row my-3">
+                    <label for="email" class="col-6">{{form.password.label}}</label>
+                    <div class="col-12">
+                        {{form.password(class="form-control")}}
+                        {% for error in form.password.errors  %}
+                            <span class="text-danger fw-bold">{{error}}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="row my-3">
+                    <label for="email" class="col-6">{{form.confirm_password.label}}</label>
+                    <div class="col-12">
+                        {{form.confirm_password(class="form-control")}}
+                        {% for error in form.confirm_password.errors  %}
+                            <span class="text-danger fw-bold">{{error}}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <span>Already have an account? Login <a href="{{url_for('auth.login')}}"
+                                class="text-decoration-none">here</a>.</span>
+                    </div>
+                </div>
+
+                <div class="row my-5">
+                    <div class="col-12 d-flex justify-content-center">
+                        {{form.register(class="btn btn-primary")}}
+                    </div>
+                </div>
+            </form>
+
+        </div>
+        <div class="col-4"></div>
+    </div>
+
+
+</div>
+
+{% endblock content%}

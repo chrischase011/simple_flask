@@ -48,4 +48,4 @@ app.register_blueprint(controller, name="controller")
 app.register_blueprint(auth, name="auth")
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()

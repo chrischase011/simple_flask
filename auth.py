@@ -11,6 +11,8 @@ from flask import Blueprint
 from flask_mail import Message
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail, To
+from base64 import b64encode
+import random, string
 from models import Characters, Users
 auth = Blueprint('controller', __name__)
 
@@ -42,11 +44,11 @@ def register():
             if user :
                 flash("Email address already exists. Please choose different email.")
             else:
-                token = os.urandom(40)
+                token = token_generator()
                 check_token = Users.query.filter_by(token = token).first()
 
                 while check_token:
-                    token = os.urandom(40)
+                    token = token_generator()
                     check_token = Users.query.filter_by(token = token).first()
 
                 result = Users(request.form['email'], request.form['full_name'], generate_password_hash(request.form['password'], method='sha256'), token = token)
@@ -64,7 +66,7 @@ def register():
                     dynamic_template_data={
                         "name" : request.form['full_name'],
                         "url" : url_for('auth.verify', token=token, _external=True)
-                    })
+                    },subject="Email Verification")
                 ]
 
                 message = Mail(from_email=os.environ.get('MAIL_DEFAULT_SENDER'),
@@ -91,7 +93,7 @@ def verify(token):
         flash("Invalid link. Please check your email for the link.", 'error')
         return redirect(url_for('controller.home'))
 
-    return render_template("auth/verify.html")
+    return render_template("auth/verify.html", token=token)
 
 @auth.route('/biz')
 def biz():
@@ -104,3 +106,7 @@ def logout():
     logout_user()
     return redirect(url_for('controller.home'))
 
+
+
+def token_generator(length = 40, chars=string.ascii_uppercase + string.digits):
+    return ''.join(random.choice(chars) for _ in range(length))

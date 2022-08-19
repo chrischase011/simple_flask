@@ -10,6 +10,6 @@ pip install -r requirements.txt
 ```
 
 ```
-# Run this on command
+# Run this on command line/terminal
 flask run
 ```

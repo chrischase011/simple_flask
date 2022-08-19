@@ -15,9 +15,9 @@ def test():
 def home():
     return render_template("pages/index.html")
 
-@controller.route('/profile')
-def profile():
-    return render_template("pages/profile.html",  title="Profile")
+@controller.route('/blog')
+def blog():
+    return render_template("pages/blog.html",  title="blog")
 
 @controller.route('/game')
 def game():

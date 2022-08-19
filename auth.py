@@ -1,12 +1,16 @@
 # @Blueprint/auth
 
 #lib
-from app import db
+from urllib import response
+from app import db,mail, os
 from flask import render_template, session, abort, request, url_for,redirect,flash
 from flask_login import login_user, current_user, login_required, logout_user
 from forms import *
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Blueprint
+from flask_mail import Message
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail, To
 from models import Characters, Users
 auth = Blueprint('controller', __name__)
 
@@ -38,13 +42,61 @@ def register():
             if user :
                 flash("Email address already exists. Please choose different email.")
             else:
-                result = Users(request.form['email'], request.form['full_name'], generate_password_hash(request.form['password'], method='sha256'))
+                token = os.urandom(40)
+                check_token = Users.query.filter_by(token = token).first()
+
+                while check_token:
+                    token = os.urandom(40)
+                    check_token = Users.query.filter_by(token = token).first()
+
+                result = Users(request.form['email'], request.form['full_name'], generate_password_hash(request.form['password'], method='sha256'), token = token)
                 db.session.add(result)
                 db.session.commit()
+
+                # msg = Message("Chase's Flask Website", recipients=[request.form['email']])
+                
+                # msg.html = render_template("auth/email/token.html", name=request.form['full_name'], token=token)
+                # mail.send(msg)
+
+                to_emails = [
+                    To(email=request.form['email'],
+                    name=request.form['full_name'],
+                    dynamic_template_data={
+                        "name" : request.form['full_name'],
+                        "url" : url_for('auth.verify', token=token, _external=True)
+                    })
+                ]
+
+                message = Mail(from_email=os.environ.get('MAIL_DEFAULT_SENDER'),
+                    to_emails=to_emails,
+                    subject="Email Verification")
+                message.template_id = "d-8beaaee54d7c4cfdad51b8e5a2429b3f"
+
+                try:
+                    sendgrid_client = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+                    response = sendgrid_client.send(message)
+                except Exception as e:
+                    print(e.message)
+
                 flash("You can now login.", 'success')
                 return redirect(url_for('auth.login'))
 
     return render_template('auth/register.html', title="Register", form=form)
+
+@auth.route('/verify/<token>', methods=["GET"])
+def verify(token):
+    check_token = Users.query.filter_by(token = token).first()
+    
+    if not check_token:
+        flash("Invalid link. Please check your email for the link.", 'error')
+        return redirect(url_for('controller.home'))
+
+    return render_template("auth/verify.html")
+
+@auth.route('/biz')
+def biz():
+    return render_template("auth/email/token.html", name="Test", token="oiqerewoiruweirwerewrwer")
+
 
 @auth.route('/logout')
 @login_required
